@@ -1,0 +1,8 @@
+{
+  "BACKEND_URL": "http://localhost:8545/",
+  "DEBUG": true,
+  "THEME_COLORS": {
+    "PRIMARY": "#007bff",
+    "SECONDARY": "#fc3"
+  }
+}
