@@ -5,6 +5,7 @@ import React from 'react';
 import Dashboard from "./Dashboard";
 import ClientDashboard from "./ClientDashboard";
 import Yagna from "./Yagna";
+import TokenERC20Dashboard from "./TokenERC20Dashboard";
 
 function MainPage() {
 	return (
@@ -15,9 +16,6 @@ function MainPage() {
 				</div>
 				<div className="top-header-navigation">
 					<Link to="/">Main page</Link>
-					<Link to="/yagna">Yagna</Link>
-					<Link to="/dashboard">Dashboard</Link>
-					<Link to="/clients">Clients</Link>
 				</div>
 			</div>
 
@@ -27,11 +25,9 @@ function MainPage() {
 						<div>
 							Config data:
 							{JSON.stringify(configData, null, 2)}
+							<TokenERC20Dashboard></TokenERC20Dashboard>
 						</div>
 					</div>}></Route>
-					<Route path="yagna" element={<Yagna/>}></Route>
-					<Route path="dashboard" element={<Dashboard/>}></Route>
-					<Route path="clients" element={<ClientDashboard/>}></Route>
 				</Routes>
 			</div>
 
