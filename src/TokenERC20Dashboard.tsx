@@ -36,7 +36,7 @@ function TokenErc20Dashboard() {
             {
                 x: x,
                 y: y,
-                type: 'bar',
+                type: 'line',
             }];
         return plotlyData;
 

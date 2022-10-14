@@ -12,6 +12,8 @@ class TokenERC20Provider {
     private instances: any;
     private callbackCount: number;
     private id: string;
+    private holder: string;
+    private token: string;
 
     private history: any;
 
@@ -24,6 +26,12 @@ class TokenERC20Provider {
 
     public getHistory() : any {
         return this.history;
+    }
+
+    public setHolderAndToken(address: string, token: string) {
+        this.holder = address;
+        this.token = token;
+        this.updateDataLoop();
     }
 
     registerListener(eventHandler:any) {
@@ -65,7 +73,8 @@ class TokenERC20Provider {
     }
 
     async fetchData() {
-        const response = await fetch(`${config.BACKEND_URL}history/30000000/30010000`);
+
+        const response = await fetch(`${config.BACKEND_URL}history/30000000/34330698/50000/${this.token}/${this.holder}`);
         const history = await response.json();
 
         this.history = history;
@@ -93,7 +102,8 @@ class TokenERC20Provider {
                     this.callbackCount += 1;
                     callback();
                 }
-                await new Promise(r => setTimeout(r, 3000));
+                break;
+                //await new Promise(r => setTimeout(r, 300000));
             }
         }
     }
