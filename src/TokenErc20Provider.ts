@@ -1,5 +1,6 @@
 import config from "./config.json";
 import {uuidv4} from "./Utils";
+import {TokenInfo} from "./TokenList";
 
 let DEBUG = true;
 if (config.DEBUG === false) {
@@ -13,7 +14,7 @@ class TokenERC20Provider {
     private callbackCount: number;
     private id: string;
     private holder: string;
-    private token: string;
+    private token: TokenInfo;
 
     private history: any;
 
@@ -28,7 +29,7 @@ class TokenERC20Provider {
         return this.history;
     }
 
-    public setHolderAndToken(address: string, token: string) {
+    public setHolderAndToken(address: string, token: TokenInfo) {
         this.holder = address;
         this.token = token;
         this.updateDataLoop();
@@ -74,7 +75,7 @@ class TokenERC20Provider {
 
     async fetchData() {
 
-        const response = await fetch(`${config.BACKEND_URL}history/30000000/34330698/50000/${this.token}/${this.holder}`);
+        const response = await fetch(`${config.BACKEND_URL}history/30000000/34330698/50000/${this.holder}/${this.token.address}`);
         const history = await response.json();
 
         this.history = history;

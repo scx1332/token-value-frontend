@@ -2,6 +2,8 @@ import { AudioOutlined } from '@ant-design/icons';
 import {AutoComplete, Button, Input, Space} from 'antd';
 import React, {useState} from 'react';
 import tokenERC20Provider from "./TokenErc20Provider";
+import get_polygon_tokens, {TokenInfo} from "./TokenList";
+import {To} from "react-router";
 
 const { Search } = Input;
 
@@ -15,26 +17,29 @@ const suffix = (
 );
 
 
-const POLYGON_TOKENS = [{
-      value: "0xc2132D05D31c914a87C6611C10748AEb04B58e8F",
-    name: "USDT"
-},
-    {
-        value: "0x0B220b82F3eA3B7F6d9A1D8ab58930C064A2b5Bf",
-        name: "GLM"
-    }
-]
-
 function TokenERC20Controls() {
     const [optionsTokens, setOptionsTokens] = useState([]);
     const [optionsHolders, setOptionsHolders] = useState([]);
-    const [token, setToken] = useState("");
-    const [holder, setHolder] = useState("");
+    const [token, setToken] = useState<TokenInfo>(null);
+    const [holder, setHolder] = useState("0xe7804c37c13166ff0b37f5ae0bb07a3aebb6e245");
     const onSearchTokens = (searchText:any) => {
         let optionsLocal = [];
-        for (let polygonToken of POLYGON_TOKENS) {
+
+
+        for (let polygonToken of get_polygon_tokens().tokens) {
+            let matches = false;
             if (polygonToken.name.toLowerCase().includes(searchText.toLowerCase())) {
-                optionsLocal.push(polygonToken);
+                matches = true;
+            }
+            else if (polygonToken.symbol.toLowerCase().includes(searchText.toLowerCase())) {
+                matches = true;
+            }
+            if (matches) {
+                let option = {
+                    value: `${polygonToken.symbol} - ${polygonToken.name} (${polygonToken.address})`,
+                    ...polygonToken
+                }
+                optionsLocal.push(option);
             }
         }
         setOptionsTokens(
@@ -53,12 +58,12 @@ function TokenERC20Controls() {
     };
 
     function onPlot() {
-        tokenERC20Provider.setHolderAndToken(token, holder);
+        tokenERC20Provider.setHolderAndToken(holder, token);
 
     }
 
-    function onSelectToken(data:any) {
-        setToken(data)
+    function onSelectToken(data:any, option: any) {
+        setToken(option)
     }
 
     function onSelectHolder(data:any) {
@@ -68,13 +73,13 @@ function TokenERC20Controls() {
 
     return (
         <Space direction="vertical">
-            <div>token: {token}</div>
+            <div>token: {token?token.address:""}</div>
             <div>holder: {holder}</div>
 
             <AutoComplete
                 options={optionsTokens}
                 style={{
-                    width: 200,
+                    width: 500,
                 }}
                 onSearch={onSearchTokens}
                 onSelect={onSelectToken}
@@ -84,7 +89,7 @@ function TokenERC20Controls() {
             <AutoComplete
                 options={optionsHolders}
                 style={{
-                    width: 200,
+                    width: 500,
                 }}
                 onSearch={onSearchHolders}
                 onSelect={onSelectHolder}
