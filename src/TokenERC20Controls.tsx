@@ -14,22 +14,37 @@ const suffix = (
     />
 );
 
-const mockVal = (str: any, repeat = 1) => ({
-    value: "0xe7804c37c13166ff0b37f5ae0bb07a3aebb6e245",
-});
+
+const POLYGON_TOKENS = [{
+      value: "0xc2132D05D31c914a87C6611C10748AEb04B58e8F",
+    name: "USDT"
+},
+    {
+        value: "0x0B220b82F3eA3B7F6d9A1D8ab58930C064A2b5Bf",
+        name: "GLM"
+    }
+]
 
 function TokenERC20Controls() {
-    const [options, setOptions] = useState([]);
+    const [optionsTokens, setOptionsTokens] = useState([]);
+    const [optionsHolders, setOptionsHolders] = useState([]);
     const [token, setToken] = useState("");
     const [holder, setHolder] = useState("");
     const onSearchTokens = (searchText:any) => {
-        setOptions(
-            [{value:"0xe7804c37c13166ff0b37f5ae0bb07a3aebb6e245"}]
+        let optionsLocal = [];
+        for (let polygonToken of POLYGON_TOKENS) {
+            if (polygonToken.name.toLowerCase().includes(searchText.toLowerCase())) {
+                optionsLocal.push(polygonToken);
+            }
+        }
+        setOptionsTokens(
+            optionsLocal
         );
     };
     const onSearchHolders = (searchText:any) => {
-        setOptions(
-            [{value:"0xc2132D05D31c914a87C6611C10748AEb04B58e8F"}]
+        setOptionsHolders(
+            [{value:"0x0000000000000000000000000000000000000000"},
+                {value:"0x000000000000000000000000000000000000dEaD"}]
         );
     };
 
@@ -57,7 +72,7 @@ function TokenERC20Controls() {
             <div>holder: {holder}</div>
 
             <AutoComplete
-                options={options}
+                options={optionsTokens}
                 style={{
                     width: 200,
                 }}
@@ -67,7 +82,7 @@ function TokenERC20Controls() {
                 placeholder="input here"
             />
             <AutoComplete
-                options={options}
+                options={optionsHolders}
                 style={{
                     width: 200,
                 }}

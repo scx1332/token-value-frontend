@@ -10,6 +10,7 @@ import TokenERC20Dashboard from "./TokenERC20Dashboard";
 import { Button } from 'antd';
 import { Input, Space } from 'antd';
 import TokenERC20Controls from "./TokenERC20Controls";
+import TokenERC20Page from "./TokenERC20Page";
 const { Search } = Input;
 
 const suffix = (
@@ -44,8 +45,7 @@ function MainPage() {
 						<div>
 							Config data:
 							{JSON.stringify(configData, null, 2)}
-							<TokenERC20Controls></TokenERC20Controls>
-							<TokenERC20Dashboard></TokenERC20Dashboard>
+							<TokenERC20Page></TokenERC20Page>
 
 
 						</div>
