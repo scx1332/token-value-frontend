@@ -11,6 +11,7 @@ import { Button } from 'antd';
 import { Input, Space } from 'antd';
 import TokenERC20Controls from "./TokenERC20Controls";
 import TokenERC20Page from "./TokenERC20Page";
+import ErrorBox from "./ErrorBox";
 const { Search } = Input;
 
 const suffix = (
@@ -43,6 +44,7 @@ function MainPage() {
 				<Routes>
 					<Route path="/" element={<div>
 						<div>
+							<ErrorBox></ErrorBox>
 							Config data:
 							{JSON.stringify(configData, null, 2)}
 							<TokenERC20Page></TokenERC20Page>

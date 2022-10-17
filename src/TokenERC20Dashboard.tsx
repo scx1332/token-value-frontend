@@ -5,12 +5,12 @@ import GatewayInstanceInfo from "./GatewayInstanceInfo";
 import Plot from "react-plotly.js";
 import {DateTime} from "luxon";
 import tokenErc20Provider from "./TokenErc20Provider";
+import {Space} from "antd";
 
 function TokenErc20Dashboard() {
     const [history, setHistory] = useState({});
 
     const handleDataProviderChange = function () {
-
         setHistory(tokenErc20Provider.getHistory());
     };
 
@@ -47,8 +47,11 @@ function TokenErc20Dashboard() {
     const render = function () {
         if (!history) {
             return (
-                <div>Loading...</div>
-            )
+                <Space>
+                    <div>Loading...</div>
+                    <div>{tokenErc20Provider.getLastError()}</div>
+                </Space>
+        )
         };
         try {
             let plotlySuccess = prepareChartData(history);

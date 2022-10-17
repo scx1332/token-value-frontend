@@ -20,12 +20,20 @@ const suffix = (
 function TokenERC20Controls() {
     const [optionsTokens, setOptionsTokens] = useState([]);
     const [optionsHolders, setOptionsHolders] = useState([]);
-    const [token, setToken] = useState<TokenInfo>(null);
-    const [holder, setHolder] = useState("0xe7804c37c13166ff0b37f5ae0bb07a3aebb6e245");
+    const [token, setToken] = useState<TokenInfo>(() => {
+        const token = localStorage.getItem("token");
+        const initialValue = JSON.parse(token);
+        return initialValue || "";
+    });
+
+    const [holder, setHolder] = useState(() => {
+        const saved = localStorage.getItem("holder");
+        const initialValue = JSON.parse(saved);
+        return initialValue || "0xe7804c37c13166ff0b37f5ae0bb07a3aebb6e245";
+    });
+
     const onSearchTokens = (searchText:any) => {
         let optionsLocal = [];
-
-
         for (let polygonToken of get_polygon_tokens().tokens) {
             let matches = false;
             if (polygonToken.name.toLowerCase().includes(searchText.toLowerCase())) {
@@ -62,12 +70,20 @@ function TokenERC20Controls() {
 
     }
 
+    function onChangeToken(data:any, option: any) {
+        setToken(data);
+    }
+
     function onSelectToken(data:any, option: any) {
-        setToken(option)
+        setToken(option);
+        console.log('onSelectToken', data, option);
+        localStorage.setItem("token", JSON.stringify(option));
     }
 
     function onSelectHolder(data:any) {
-        setHolder(data)
+        setHolder(data);
+        localStorage.setItem("holder", JSON.stringify(data));
+
     }
 
 
@@ -78,16 +94,18 @@ function TokenERC20Controls() {
 
             <AutoComplete
                 options={optionsTokens}
+                value={token}
                 style={{
                     width: 500,
                 }}
                 onSearch={onSearchTokens}
                 onSelect={onSelectToken}
-                onChange={onSelectToken}
+                onChange={onChangeToken}
                 placeholder="input here"
             />
             <AutoComplete
                 options={optionsHolders}
+                value={holder}
                 style={{
                     width: 500,
                 }}

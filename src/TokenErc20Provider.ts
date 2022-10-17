@@ -7,9 +7,11 @@ if (config.DEBUG === false) {
     DEBUG = false;
 }
 
+
 class TokenERC20Provider {
     private listeners: Set<any>;
-    private last_error: string | null;
+    private lastError: string | null;
+    private lastAction: string | null;
     private instances: any;
     private callbackCount: number;
     private id: string;
@@ -17,12 +19,15 @@ class TokenERC20Provider {
     private token: TokenInfo;
 
     private history: any;
+    private updateNeeded: boolean;
 
     constructor() {
         this.id = uuidv4();
         this.listeners = new Set();
         this.instances = null;
-        this.last_error = null;
+        this.lastError = null;
+        this.updateNeeded = false;
+        this.lastAction = null;
     }
 
     public getHistory() : any {
@@ -32,6 +37,7 @@ class TokenERC20Provider {
     public setHolderAndToken(address: string, token: TokenInfo) {
         this.holder = address;
         this.token = token;
+        this.updateNeeded = true;
         this.updateDataLoop();
     }
 
@@ -49,8 +55,12 @@ class TokenERC20Provider {
         this.listeners.delete(eventHandler);
     }
 
-    getLastEror() {
-        return this.last_error;
+    getLastError() {
+        return this.lastError;
+    }
+
+    getLastAction() {
+        return this.lastAction;
     }
     /*
     getPlotData() {
@@ -75,35 +85,61 @@ class TokenERC20Provider {
 
     async fetchData() {
 
-        const response = await fetch(`${config.BACKEND_URL}history/30000000/34330698/50000/${this.holder}/${this.token.address}`);
-        const history = await response.json();
+        try {
+            const response = await fetch(`${config.BACKEND_URL}history/30000000/34330698/50000/${this.holder}/${this.token.address}`);
+            const history = await response.json();
+            this.history = history;
+        }
+        catch (ex) {
+            console.log("Failed to fetch data. Set lastError");
+            this.lastError = ex.message;
+            console.log(ex);
+        }
 
-        this.history = history;
     }
 
     async updateDataLoop() {
         console.log("Waiting for listeners");
         while (true) {
+            this.lastAction = "Waiting for listeners";
+            this.lastError = null;
+            this.history = null;
             while (this.listeners.size === 0) {
                 this.instances = null;
-                this.last_error = "Waiting for data";
                 await new Promise(r => setTimeout(r, 500));
             }
+
             try {
                 if (DEBUG) {
                     console.log("Fetch gateway information...");
                 }
+                this.lastAction = "Fetching data ...";
+                this.lastError = null;
+                for (let callback of Array.from(this.listeners.values())) {
+                    callback();
+                }
+                this.updateNeeded = false;
                 await this.fetchData();
+                this.lastAction = "Data fetched";
             } catch (ex) {
                 this.instances = null;
                 console.log(ex);
-                this.last_error = ex.message;
+                this.lastError = ex.message;
             } finally {
+                await new Promise(r => setTimeout(r, 500));
+                await new Promise(r => setTimeout(r, 500));
+                await new Promise(r => setTimeout(r, 500));
+
                 for (let callback of Array.from(this.listeners.values())) {
                     this.callbackCount += 1;
                     callback();
                 }
-                break;
+                //wait for fetch flag
+
+                while (this.updateNeeded === false) {
+                    await new Promise(r => setTimeout(r, 500));
+                }
+
                 //await new Promise(r => setTimeout(r, 300000));
             }
         }
