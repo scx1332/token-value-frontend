@@ -5,19 +5,23 @@ import GatewayInstanceInfo from "./GatewayInstanceInfo";
 import Plot from "react-plotly.js";
 import {DateTime} from "luxon";
 import tokenErc20Provider from "./TokenErc20Provider";
-import {Space} from "antd";
+import {Space, Table} from "antd";
+import {TokenInfo} from "./TokenList";
 
 function TokenErc20Dashboard() {
     const [history, setHistory] = useState({});
+    const [token, setToken] = useState<TokenInfo|null>(null);
 
     const handleDataProviderChange = function () {
         setHistory(tokenErc20Provider.getHistory());
+        setToken(tokenErc20Provider.getToken());
     };
 
     useEffect( () => {
         console.log("Dashboard.useEffect");
         tokenERC20Provider.registerListener(handleDataProviderChange);
         setHistory(tokenERC20Provider.getHistory());
+        setToken(tokenERC20Provider.getToken());
         return () => {
             tokenERC20Provider.unregisterListener(handleDataProviderChange);
         }
@@ -30,8 +34,9 @@ function TokenErc20Dashboard() {
 
         for (let block_no in history) {
             x.push(block_no);
-            y.push(history[block_no]);
+            y.push(history[block_no] / Math.pow(10, token.decimals));
         }
+        console.log(token.decimals);
         let plotlyData = [
             {
                 x: x,
@@ -58,6 +63,13 @@ function TokenErc20Dashboard() {
 
             return (
                 <div className="App">
+                    <Space direction="vertical">
+                        <div className="token-info">
+                            <h1>{token.name}</h1>
+                            <h2>{token.symbol}</h2>
+                            <h3>{token.address}</h3>
+                        </div>
+                    </Space>
 
                     <div>
                         <div className="top-header">

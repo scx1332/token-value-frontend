@@ -14,9 +14,9 @@ class TokenERC20Provider {
     private lastAction: string | null;
     private instances: any;
     private callbackCount: number;
-    private id: string;
+    private readonly id: string;
     private holder: string;
-    private token: TokenInfo;
+    private token: TokenInfo | null;
 
     private history: any;
     private updateNeeded: boolean;
@@ -32,6 +32,10 @@ class TokenERC20Provider {
 
     public getHistory() : any {
         return this.history;
+    }
+
+    public getToken() : TokenInfo | null {
+        return this.token;
     }
 
     public setHolderAndToken(address: string, token: TokenInfo) {

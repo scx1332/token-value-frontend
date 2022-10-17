@@ -41,8 +41,7 @@ function ErrorBox() {
     return (
       <Space>
           <div className="error-box">
-              <h1>Something went wrong</h1>
-                {inside()}
+             {inside()}
           </div>
       </Space>
     );
