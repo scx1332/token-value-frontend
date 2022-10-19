@@ -33,8 +33,8 @@ function TokenErc20Dashboard() {
         let y = [];
 
         for (let block_no in history) {
-            x.push(block_no);
-            y.push(history[block_no] / Math.pow(10, token.decimals));
+            x.push(history[block_no]["d"]);
+            y.push(history[block_no]["v"] / Math.pow(10, token.decimals));
         }
         console.log(token.decimals);
         let plotlyData = [

@@ -90,7 +90,7 @@ class TokenERC20Provider {
     async fetchData() {
 
         try {
-            const response = await fetch(`${config.BACKEND_URL}history/30000000/34330698/50000/${this.holder}/${this.token.address}`);
+            const response = await fetch(`${config.BACKEND_URL}hour/2022-10-10/2022-10-20/${this.holder}/${this.token.address}`);
             const history = await response.json();
             this.history = history;
         }
