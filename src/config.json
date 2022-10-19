@@ -1,5 +1,5 @@
 {
-  "BACKEND_URL": "http://reality64.golem.network:9951/",
+  "BACKEND_URL": "api/",
   "DEBUG": true,
   "THEME_COLORS": {
     "PRIMARY": "#007bff",
